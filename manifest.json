@@ -1,0 +1,11 @@
+{
+  "name": "Wish Study ♧ 勉強管理ノート",
+  "short_name": "Wish Study",
+  "description": "クローバーと星のウィッシュコア風 勉強管理アプリ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8f8ef",
+  "theme_color": "#e5efda",
+  "icons": []
+}

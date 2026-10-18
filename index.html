@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e5efda">
+<meta name="description" content="クローバーと星のウィッシュコア風 勉強管理アプリ">
+<link rel="manifest" href="./manifest.json">
+<title>Wish Study ♧</title>
+<style>
+:root{--green:#dcebd4;--pink:#f5e1e8;--ink:#39433b;--line:#dbe4d5}
+*{box-sizing:border-box}
+body{margin:0;background:#eef0e8;color:#353b35;font-family:"851手書き雑フォント","Yu Gothic",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:650px;min-height:100dvh;margin:auto;background:#f8f8ef;border:1px solid #dce5d4;overflow:hidden}
+.hero{background:linear-gradient(135deg,#e5efda,#fbf1f4 70%,#f7f6e8);padding:23px 19px 17px;position:relative}
+.eyebrow{font-size:10px;letter-spacing:3px;color:#687b65}
+h1{font-size:27px;margin:7px 0 3px;letter-spacing:1px}
+.sub{font-size:12px;color:#6c7569}.stars{position:absolute;right:19px;top:18px;font-size:25px;color:#a1b68f}
+.date{font-size:12px;margin-top:16px}
+.nav{display:flex;gap:5px;padding:9px;background:#fffdf8;border-bottom:1px solid var(--line);overflow-x:auto;position:sticky;top:0;z-index:3}
+.nav button{flex:1;min-width:66px;border:0;background:transparent;border-radius:12px;padding:10px 5px;font-size:12px;color:#697367;white-space:nowrap}
+.nav button.active{background:#e5eedf;color:#344b35;font-weight:700}
+.page{padding:15px;display:none}.page.active{display:block}
+.panel{background:#fffefa;border:1px solid #e3e7db;border-radius:17px;padding:14px;margin-bottom:12px}
+.section{font-size:15px;font-weight:800;margin:0 0 11px}.muted{font-size:11px;color:#81877b}
+.progress{height:10px;background:#e9eee3;border-radius:10px;overflow:hidden;margin:10px 0}
+.bar{height:100%;width:0;background:linear-gradient(90deg,#b8d7ad,#efcbd9);border-radius:10px;transition:width .2s}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:#f5f7ef;border-radius:13px;padding:11px 7px;text-align:center}
+.stat b{display:block;font-size:19px;margin-bottom:3px}.stat span{font-size:10px;color:#727a6f}
+.subject-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.subject-card{padding:11px;border-radius:13px;background:#f7f5ef;border:1px solid #ece8df}
+.subject-card:last-child:nth-child(odd){grid-column:1/-1}
+.subject-name{font-size:12px;font-weight:800}.subject-time{font-size:19px;font-weight:800;margin:7px 0 2px}
+.mini-bar{height:4px;border-radius:4px;background:#e4e8df;overflow:hidden;margin-top:8px}.mini-bar i{display:block;height:100%;background:#b9d7ad;width:0}
+.field{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#70786d;margin-bottom:10px}
+input,select{width:100%;min-width:0;border:1px solid #dce3d5;border-radius:11px;background:#fff;padding:11px;color:#343c34;outline:none}
+input:focus,select:focus{border-color:#a8c69c}
+.btn{border:0;border-radius:12px;padding:11px 14px;background:#dfead8;color:#344632;font-size:12px;font-weight:700}
+.btn.dark{background:#39453b;color:#fff}.btn.pink{background:#f3e1e8;color:#694957}.btn.light{background:#f1f2eb;color:#4e594b}
+.btn.full{width:100%}.row{display:flex;gap:8px;align-items:center}.row>*{min-width:0}.row .grow{flex:1}
+.task{display:flex;gap:10px;align-items:flex-start;padding:12px 2px;border-bottom:1px dashed #e5e6dc}
+.task:last-child{border-bottom:0}.task input[type=checkbox]{width:19px;height:19px;accent-color:#91b38a;flex-shrink:0;margin-top:1px}
+.task-text{font-size:13px;line-height:1.5;flex:1;overflow-wrap:anywhere}.task.done .task-text{text-decoration:line-through;color:#9ca197}
+.tag{font-size:10px;border-radius:7px;padding:4px 6px;background:#eaf0e4;color:#5b7555;white-space:nowrap}
+.del{border:0;background:transparent;color:#a4a49a;font-size:17px;padding:0 4px}
+.empty{text-align:center;padding:20px 6px;color:#91968a;font-size:12px;line-height:1.8}
+.quote{background:#f8edf1;border-radius:13px;padding:13px;font-size:13px;line-height:1.7;text-align:center;color:#755363}
+.timerface{text-align:center;padding:19px 5px}.timer{font-size:clamp(36px,11vw,49px);font-weight:800;letter-spacing:2px;font-variant-numeric:tabular-nums;line-height:1.3}
+.timerlabel{font-size:12px;color:#778171;margin:6px 0 17px}.timerbuttons{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.mode{display:flex;background:#f1f3ec;border-radius:12px;padding:4px;gap:4px}.mode button{flex:1;border:0;border-radius:9px;padding:10px 4px;background:transparent;font-size:12px}
+.mode button.active{background:#fff;box-shadow:0 1px 4px #0000000b;font-weight:800}
+.history-row{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #edf0e8;font-size:12px}
+.foot{text-align:center;font-size:10px;color:#92978c;padding:3px 10px 17px}
+.notice{font-size:11px;line-height:1.6;color:#687363;margin-top:8px}
+@media(min-width:480px){.page{padding:18px}.hero{padding:25px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<header class="hero"><div class="eyebrow">✧ MY LITTLE STUDY JOURNAL ✧</div><h1>Wish Study ♧</h1><div class="sub">小さな一歩が 未来のわたしをつくる</div><div class="stars">✦ ☆</div><div class="date" id="date"></div></header>
+<nav class="nav" aria-label="メニュー"><button class="active" data-tab="home">♧ ホーム</button><button data-tab="tasks">☆ やること</button><button data-tab="timer">✧ タイマー</button><button data-tab="record">♡ 記録</button></nav>
+<section class="page active" id="home">
+<div class="panel"><div class="section">✦ TODAY'S MISSION</div><div class="row" style="justify-content:space-between"><span class="muted">今日の勉強達成率</span><b id="rate" style="font-size:21px">0%</b></div><div class="progress"><div class="bar" id="taskbar"></div></div><div class="row" style="justify-content:space-between"><span class="muted" id="taskcount">0 / 0 個 完了</span><span class="muted">目標 ♡ 60分</span></div><div class="progress"><div class="bar" id="timebar"></div></div><div class="stats"><div class="stat"><b id="total">0分</b><span>今日の勉強時間</span></div><div class="stat"><b id="remain">60分</b><span>目標まで</span></div><div class="stat"><b id="subdone">0/5</b><span>取り組んだ教科</span></div></div></div>
+<div class="panel"><div class="section">♧ 教科別の記録</div><div class="subject-grid" id="subjects"></div></div>
+<div class="panel"><div class="section">☆ 今日のチェックリスト</div><div id="home-tasks"></div><button class="btn full" style="margin-top:10px" data-goto="tasks">＋ 勉強内容を登録する</button></div><div class="quote" id="praise">今日もここを開けたね ♡ その一歩がえらい！</div>
+</section>
+<section class="page" id="tasks"><div class="panel"><div class="section">✧ 今日の勉強を登録</div><label class="field">教科<select id="new-subject"><option>国語</option><option>数学</option><option>英語</option><option>理科</option><option>社会</option></select></label><label class="field">勉強すること<input id="new-task" maxlength="180" placeholder="例：数学ワーク p.20〜23"></label><button class="btn dark full" id="add">＋ チェックリストに追加</button><div class="notice">追加した内容は自動保存されるよ ♡ 完了したらチェックを入れてね</div></div><div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><div class="section" style="margin:0">♧ 今日のリスト</div><span class="muted" id="listcount">0件</span></div><label class="field">表示する教科<select id="filter"><option value="すべて">すべての教科</option><option>国語</option><option>数学</option><option>英語</option><option>理科</option><option>社会</option></select></label><div id="task-list"></div><button class="btn pink full" id="clear-done" style="margin-top:10px">完了した項目を削除</button></div></section>
+<section class="page" id="timer"><div class="panel"><div class="section">☆ STUDY TIMER</div><div class="mode"><button class="active" data-mode="stopwatch">ストップウォッチ</button><button data-mode="pomodoro">ポモドーロ</button></div><div class="timerface"><div class="timer" id="clock">00:00:00</div><div class="timerlabel" id="timerlabel">集中する時間を計ろう ♡</div><div class="row" style="justify-content:center;max-width:300px;margin:0 auto"><label class="field" style="flex:1;text-align:left">勉強する教科<select id="timer-subject"><option>国語</option><option>数学</option><option>英語</option><option>理科</option><option>社会</option></select></label><label class="field" style="flex:1;text-align:left" id="pomo-setting">集中時間<select id="pomo-length"><option value="25">25分</option><option value="40">40分</option><option value="50">50分</option></select></label></div><div class="timerbuttons"><button class="btn dark" id="start">▶ スタート</button><button class="btn" id="reset">↺ リセット</button></div><div class="notice" id="timer-note">計測中の時間は、選んだ教科の勉強記録に反映されるよ</div></div></div><div class="panel"><div class="section">♡ ポモドーロの使い方</div><div class="muted" style="line-height:2">① 集中する教科を選ぶ<br>② スタートして勉強する<br>③ 集中時間が終わったら5分休憩<br>④ 休憩のあとは、また集中タイム！</div><button class="btn light full" id="break" style="margin-top:12px">☁ 5分休憩に切り替える</button></div></section>
+<section class="page" id="record"><div class="panel"><div class="section">♡ TODAY'S STUDY LOG</div><div class="stats"><div class="stat"><b id="log-total">0分</b><span>合計時間</span></div><div class="stat"><b id="log-goal">0%</b><span>時間目標達成率</span></div><div class="stat"><b id="log-tasks">0%</b><span>課題達成率</span></div></div><div class="section" style="margin-top:17px">♧ 教科別の勉強時間</div><div id="record-subjects"></div></div><div class="panel"><div class="section">✦ 今日のがんばり</div><div id="record-praise" class="quote">未来の自分が、今日の自分にありがとうって言う日になるよ ♡</div><button class="btn full" id="export" style="margin-top:12px">記録をテキストでコピー</button><div class="notice">端末に保存された今日の記録をまとめられるよ</div></div></section>
+<div class="foot">✧ little steps, lovely future ✧<br>記録はこの端末のブラウザに自動保存</div>
+</div>
+<script>
+(()=>{
+const subjects=['国語','数学','英語','理科','社会'],$=id=>document.getElementById(id);
+const today=()=>{let d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const key=()=> 'wishstudy-v1-'+today();
+const defaults=()=>({date:today(),tasks:[],times:{'国語':0,'数学':0,'英語':0,'理科':0,'社会':0}});
+let data,mode='stopwatch',running=false,elapsed=0,lastTick=0,interval=null,pomoRemaining=1500,isBreak=false;
+const praiseList=['すごい！ひとつ進めただけでも立派な前進だよ ♡','ちゃんと自分の目標に向き合っててえらい！','今日の努力は、ちゃんと力になってるよ ♡','ひとつずつ積み重ねられるの、ほんとうに素敵！','ここまで取り組めた自分に拍手してあげよう ♡','完璧じゃなくていいんだよ、続けようとする気持ちが宝物！'];
+function load(){try{let v=JSON.parse(localStorage.getItem(key()));data=v&&v.date===today()?v:defaults()}catch(e){data=defaults()}save()}
+function save(){try{localStorage.setItem(key(),JSON.stringify(data))}catch(e){alert('保存できませんでした。ブラウザの設定を確認してね')}} 
+const total=()=>subjects.reduce((a,s)=>a+(data.times[s]||0),0),done=()=>data.tasks.filter(t=>t.done).length,rate=()=>data.tasks.length?Math.round(done()/data.tasks.length*100):0,mins=n=>Math.floor(n/60)+'分';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const randomPraise=()=>praiseList[Math.floor(Math.random()*praiseList.length)];
+function taskHTML(arr){return arr.length?arr.map(t=>`<div class="task ${t.done?'done':''}"><input type="checkbox" data-check="${t.id}" ${t.done?'checked':''} aria-label="完了チェック"><div class="task-text">${esc(t.text)}<div style="margin-top:5px"><span class="tag">${esc(t.subject)}</span></div></div><button class="del" data-del="${t.id}" aria-label="削除">×</button></div>`).join(''):'<div class="empty">✧ まだ予定がないよ ✧<br>今日やることを登録してみよう ♡</div>'}
+function render(){
+$('date').textContent=new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'short'})+'　✧';
+let tot=total(),tr=rate(),goal=Math.min(100,Math.floor(tot/3600*100));
+$('rate').textContent=tr+'%';$('taskbar').style.width=tr+'%';$('taskcount').textContent=done()+' / '+data.tasks.length+' 個 完了';$('total').textContent=mins(tot);$('remain').textContent=mins(Math.max(0,3600-tot));$('timebar').style.width=goal+'%';$('subdone').textContent=subjects.filter(s=>(data.times[s]||0)>0).length+'/5';
+$('subjects').innerHTML=subjects.map(s=>{let n=data.times[s]||0;return `<div class="subject-card"><div class="subject-name">✧ ${s}</div><div class="subject-time">${mins(n)}</div><div class="muted">${n?Math.floor(n/60)+'時間 '+n%60+'分 勉強':'まだ記録なし'}</div><div class="mini-bar"><i style="width:${Math.min(100,n/3600*100)}%"></i></div></div>`}).join('');
+$('home-tasks').innerHTML=taskHTML(data.tasks.slice(0,4));$('task-list').innerHTML=taskHTML(data.tasks.filter(t=>$('filter').value==='すべて'||t.subject===$('filter').value));$('listcount').textContent=data.tasks.length+'件';
+$('log-total').textContent=mins(tot);$('log-goal').textContent=goal+'%';$('log-tasks').textContent=tr+'%';
+$('record-subjects').innerHTML=subjects.map(s=>`<div class="history-row"><span>♧ ${s}</span><b>${mins(data.times[s]||0)}</b></div>`).join('');
+$('praise').textContent=done()===data.tasks.length&&data.tasks.length?'全部完了！すごすぎるよ、今日のがんばりは満点だよ ♡':tot>=3600?'1時間達成！自分との約束を守れたね ♡':randomPraise();
+$('record-praise').textContent=tot>=3600?'目標の1時間を達成！今日の自分に誇りを持ってね ♡':done()===data.tasks.length&&data.tasks.length?'登録した勉強を全部完了！最後まで取り組めたのが素敵だよ ♡':'今日できたことを大切にしようね ♡ 小さな努力もちゃんと記録に残ってるよ';
+}
+function addTask(text,subject){if(!text.trim()){ $('new-task').focus();return }data.tasks.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),text:text.trim(),subject,done:false});save();render();$('new-task').value='';$('new-task').focus();$('praise').textContent='勉強予定を登録できたね！行動に移せたのがもうえらい ♡'}
+function checkTask(id,checked){let t=data.tasks.find(t=>t.id===id);if(!t)return;t.done=checked;save();render();if(checked)$('praise').textContent=randomPraise()}
+function switchTab(tab){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===tab));}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.goto)));
+$('add').addEventListener('click',()=>addTask($('new-task').value,$('new-subject').value));$('new-task').addEventListener('keydown',e=>{if(e.key==='Enter')addTask($('new-task').value,$('new-subject').value)});
+$('filter').addEventListener('change',render);
+$('app').addEventListener('change',e=>{if(e.target.matches('[data-check]'))checkTask(e.target.dataset.check,e.target.checked)});
+$('app').addEventListener('click',e=>{let b=e.target.closest('[data-del]');if(b){data.tasks=data.tasks.filter(t=>t.id!==b.dataset.del);save();render()}});
+$('clear-done').addEventListener('click',()=>{data.tasks=data.tasks.filter(t=>!t.done);save();render()});
+function fmt(s){s=Math.max(0,Math.floor(s));return String(Math.floor(s/3600)).padStart(2,'0')+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function drawClock(){$('clock').textContent=fmt(mode==='stopwatch'?elapsed:pomoRemaining);$('start').textContent=running?'Ⅱ 一時停止':'▶ スタート'}
+function stop(){if(interval){clearInterval(interval);interval=null}running=false;drawClock()}
+function recordTime(n){let s=$('timer-subject').value;data.times[s]=(data.times[s]||0)+n;save();render()}
+function tick(){if(!running)return;let now=Date.now(),delta=Math.floor((now-lastTick)/1000);if(delta<1)return;lastTick+=delta*1000;
+if(mode==='stopwatch'){elapsed+=delta;recordTime(delta)}
+else if(!isBreak){let n=Math.min(delta,pomoRemaining);pomoRemaining-=n;recordTime(n);if(pomoRemaining<=0){pomoRemaining=0;stop();data.pomoSessions=(data.pomoSessions||0)+1;save();$('timerlabel').textContent='集中タイム終了！5分休憩しよう ♡';alert('集中タイム終了！おつかれさま ♡ 5分休憩しよう')}}
+else{pomoRemaining=Math.max(0,pomoRemaining-delta);if(pomoRemaining===0){stop();isBreak=false;pomoRemaining=Number($('pomo-length').value)*60;$('timerlabel').textContent='休憩終了！次の集中タイムへ ♡';alert('休憩終了！お水を飲んで、また始めよう ♡')}}
+drawClock()}
+function setMode(m){if(running)stop();mode=m;isBreak=false;elapsed=0;pomoRemaining=Number($('pomo-length').value)*60;document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));$('pomo-setting').style.display=m==='pomodoro'?'flex':'none';$('timerlabel').textContent=m==='pomodoro'?'集中タイムを始めよう ♡':'集中する時間を計ろう ♡';drawClock()}
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+$('start').addEventListener('click',()=>{if(running){stop();return}if(mode==='pomodoro'&&!isBreak&&pomoRemaining<=0)pomoRemaining=Number($('pomo-length').value)*60;running=true;lastTick=Date.now();drawClock();interval=setInterval(tick,250)});
+$('reset').addEventListener('click',()=>{stop();elapsed=0;pomoRemaining=isBreak?300:Number($('pomo-length').value)*60;drawClock();$('timerlabel').textContent='リセットしたよ ♡'});
+$('pomo-length').addEventListener('change',()=>{if(!running&&!isBreak){pomoRemaining=Number($('pomo-length').value)*60;drawClock()}});
+$('break').addEventListener('click',()=>{if(running)stop();mode='pomodoro';isBreak=true;pomoRemaining=300;document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode==='pomodoro'));$('pomo-setting').style.display='none';$('timerlabel').textContent='5分間、ゆっくり休もう ♡';drawClock();switchTab('timer')});
+$('export').addEventListener('click',()=>{let out='Wish Study '+today()+'\n合計：'+mins(total())+'\n課題達成率：'+rate()+'%\n'+subjects.map(s=>s+'：'+mins(data.times[s]||0)).join('\n')+'\n\n'+data.tasks.map(t=>(t.done?'[完了] ':'[未完了] ')+t.subject+'：'+t.text).join('\n');if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(()=>$('export').textContent='コピーできたよ ♡').catch(()=>prompt('記録をコピーしてね',out));else prompt('記録をコピーしてね',out)});
+if('serviceWorker' in navigator && location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+load();render();drawClock();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&running){let now=Date.now(),delta=Math.floor((now-lastTick)/1000);if(delta>0){lastTick=now;if(mode==='stopwatch'){elapsed+=delta;recordTime(delta)}else if(!isBreak){let n=Math.min(delta,pomoRemaining);pomoRemaining-=n;recordTime(n);if(pomoRemaining<=0){pomoRemaining=0;stop();$('timerlabel').textContent='集中タイム終了！休憩しよう ♡'}}else pomoRemaining=Math.max(0,pomoRemaining-delta);drawClock()}}});
+})();
+</script>
+</body>
+</html>
